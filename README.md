@@ -8,5 +8,5 @@ django-oauth-plus-mod features two authentication flows:
 * three-legged OAuth
 * xAuth (twitter xAuth)
 
-Forked from django-oauth-plus by David Larlet et al.
+Forked from django-oauth-plus by David Larlet et al. https://bitbucket.org/david/django-oauth-plus
 
