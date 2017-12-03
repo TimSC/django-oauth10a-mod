@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
+from __future__ import unicode_literals
+from __future__ import print_function
+
 import time
 import urllib
 import re
@@ -63,7 +66,7 @@ class BaseOAuthTestCase(TestCase):
             raise NotImplementedError
 
         if response.status_code != 200:
-            print response
+            print (response)
         self.assertEqual(response.status_code, 200)
 
         response_qs = parse_qs(response.content)

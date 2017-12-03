@@ -1,3 +1,7 @@
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
+from __future__ import print_function
+
 from django.db import models
 from oauth_provider.compat import get_random_string
 from oauth_provider.consts import SECRET_SIZE

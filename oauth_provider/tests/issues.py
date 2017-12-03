@@ -1,3 +1,7 @@
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
+from __future__ import print_function
+
 import time
 import urllib
 import json
@@ -267,7 +271,7 @@ class OAuthTestIssue41XForwardedProto(BaseOAuthTestCase):
             "HTTP_AUTHORIZATION": self._make_GET_auth_header(url),
         }
         response = self.c.get(url.replace('https', 'http'), **kwargs)
-        assert response == responses.COULD_NOT_VERIFY_OAUTH_REQUEST_RESPONSE
+        assert response == responses.GetCouldNotVerifyOAuthRequestResponse()
         self.assertEqual(response.status_code, 401)
 
         url = "http://testserver:80/oauth/none/"
@@ -277,7 +281,7 @@ class OAuthTestIssue41XForwardedProto(BaseOAuthTestCase):
             "HTTP_AUTHORIZATION": self._make_GET_auth_header(url),
         }
         response = self.c.get(url.replace('http', 'https'), **kwargs)
-        assert response == responses.COULD_NOT_VERIFY_OAUTH_REQUEST_RESPONSE
+        assert response == responses.GetCouldNotVerifyOAuthRequestResponse()
         self.assertEqual(response.status_code, 401)
 
     def test_when_x_forwarded_proto_header_has_valid_protocol(self):

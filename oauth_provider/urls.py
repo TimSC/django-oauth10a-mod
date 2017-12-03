@@ -1,3 +1,7 @@
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
+from __future__ import print_function
+
 from oauth_provider.compat import url
 
 from views import request_token, user_authorization, access_token

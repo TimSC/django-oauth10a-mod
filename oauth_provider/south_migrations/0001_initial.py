@@ -52,7 +52,7 @@ class Migration(SchemaMigration):
             ('key', self.gf('django.db.models.fields.CharField')(max_length=32, null=True, blank=True)),
             ('secret', self.gf('django.db.models.fields.CharField')(max_length=16, null=True, blank=True)),
             ('token_type', self.gf('django.db.models.fields.SmallIntegerField')()),
-            ('timestamp', self.gf('django.db.models.fields.IntegerField')(default=1327884735L)),
+            ('timestamp', self.gf('django.db.models.fields.IntegerField')(default=1327884735)),
             ('is_approved', self.gf('django.db.models.fields.BooleanField')(default=False)),
             ('user', self.gf('django.db.models.fields.related.ForeignKey')(blank=True, related_name='tokens', null=True, to=orm[AUTH_USER_MODEL])),
             ('consumer', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['oauth_provider.Consumer'])),

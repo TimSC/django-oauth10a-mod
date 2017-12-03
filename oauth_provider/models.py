@@ -1,5 +1,13 @@
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
+from __future__ import print_function
+
+import sys
 import urllib
-import urlparse
+if sys.version_info.major < 3: 
+	import urlparse
+else:
+	import urllib.parse as urlparse
 from time import time
 import warnings
 import oauth2 as oauth
@@ -49,7 +57,7 @@ class Consumer(models.Model):
     secret = models.CharField(max_length=SECRET_SIZE, blank=True)
 
     status = models.SmallIntegerField(choices=CONSUMER_STATES, default=PENDING)
-    user = models.ForeignKey(AUTH_USER_MODEL, null=True, blank=True, db_index=True)
+    user = models.ForeignKey(AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True, db_index=True)
     xauth_allowed = models.BooleanField("Allow xAuth", default = False)
         
     def __unicode__(self):
@@ -70,9 +78,9 @@ class Token(models.Model):
     timestamp = models.IntegerField(default=default_token_timestamp)
     is_approved = models.BooleanField(default=False)
     
-    user = models.ForeignKey(AUTH_USER_MODEL, null=True, blank=True, related_name='tokens', db_index=True)
-    consumer = models.ForeignKey(Consumer)
-    scope = models.ForeignKey(Scope, null=True, blank=True)
+    user = models.ForeignKey(AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True, related_name='tokens', db_index=True)
+    consumer = models.ForeignKey(Consumer, on_delete=models.CASCADE)
+    scope = models.ForeignKey(Scope, on_delete=models.CASCADE, null=True, blank=True)
 
     @property
     def resource(self):

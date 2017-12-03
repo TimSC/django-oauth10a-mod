@@ -1,4 +1,12 @@
-from urllib import urlencode
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
+from __future__ import print_function
+
+import sys
+if sys.version_info.major < 3: 
+	import urlparse
+else:
+	import urllib.parse as urlparse
 
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
@@ -6,18 +14,18 @@ from django.contrib.auth import authenticate
 from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseRedirect
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.translation import ugettext as _
-from django.core.urlresolvers import get_callable
+from django.urls import get_callable
 
 import oauth2 as oauth
 
-from decorators import oauth_required
-from forms import AuthorizeRequestTokenForm
+from .decorators import oauth_required
+from .forms import AuthorizeRequestTokenForm
 from oauth_provider.compat import UnsafeRedirect
-from responses import INVALID_PARAMS_RESPONSE, INVALID_CONSUMER_RESPONSE, COULD_NOT_VERIFY_OAUTH_REQUEST_RESPONSE
-from store import store, InvalidConsumerError, InvalidTokenError
-from utils import verify_oauth_request, get_oauth_request, require_params, send_oauth_error
-from utils import is_xauth_request
-from consts import OUT_OF_BAND, ENABLE_VERIFIER
+from .responses import *
+from .store import get_store_singleton, InvalidConsumerError, InvalidTokenError
+from .utils import verify_oauth_request, get_oauth_request, require_params, send_oauth_error
+from .utils import is_xauth_request
+from .consts import OUT_OF_BAND, ENABLE_VERIFIER
 
 OAUTH_AUTHORIZE_VIEW = 'OAUTH_AUTHORIZE_VIEW'
 OAUTH_CALLBACK_VIEW = 'OAUTH_CALLBACK_VIEW'
@@ -28,7 +36,7 @@ UNSAFE_REDIRECTS = getattr(settings, "OAUTH_UNSAFE_REDIRECTS", False)
 def request_token(request):
     oauth_request = get_oauth_request(request)
     if oauth_request is None:
-        return INVALID_PARAMS_RESPONSE
+        return GetInvalidParamsResponse()
 
     missing_params = require_params(oauth_request, ('oauth_callback',))
     if missing_params is not None:
@@ -38,16 +46,16 @@ def request_token(request):
         return HttpResponseBadRequest('xAuth not allowed for this method.')
 
     try:
-        consumer = store.get_consumer(request, oauth_request, oauth_request['oauth_consumer_key'])
+        consumer = get_store_singleton().get_consumer(request, oauth_request, oauth_request['oauth_consumer_key'])
     except InvalidConsumerError:
-        return INVALID_CONSUMER_RESPONSE
+        return GetInvalidConsumerResponse()
 
     if not verify_oauth_request(request, oauth_request, consumer):
-        return COULD_NOT_VERIFY_OAUTH_REQUEST_RESPONSE
+        return GetCouldNotVerifyOAuthRequestResponse()
 
     try:
-        request_token = store.create_request_token(request, oauth_request, consumer, oauth_request['oauth_callback'])
-    except oauth.Error, err:
+        request_token = get_store_singleton().create_request_token(request, oauth_request, consumer, oauth_request['oauth_callback'])
+    except oauth.Error as err:
         return send_oauth_error(err)
 
     ret = urlencode({
@@ -67,18 +75,18 @@ def user_authorization(request, form_class=AuthorizeRequestTokenForm):
     oauth_request = get_oauth_request(request)
 
     try:
-        request_token = store.get_request_token(request, oauth_request, oauth_token)
+        request_token = get_store_singleton().get_request_token(request, oauth_request, oauth_token)
     except InvalidTokenError:
         return HttpResponseBadRequest('Invalid request token.')
 
-    consumer = store.get_consumer_for_request_token(request, oauth_request, request_token)
+    consumer = get_store_singleton().get_consumer_for_request_token(request, oauth_request, request_token)
 
     if request.method == 'POST':
         form = form_class(request.POST)
         if request.session.get('oauth', '') == request_token.key and form.is_valid():
             request.session['oauth'] = ''
             if form.cleaned_data['authorize_access']:
-                request_token = store.authorize_request_token(request, oauth_request, request_token)
+                request_token = get_store_singleton().authorize_request_token(request, oauth_request, request_token)
                 args = { 'oauth_token': request_token.key }
             else:
                 args = { 'error': _('Access not granted by user.') }
@@ -95,7 +103,7 @@ def user_authorization(request, form_class=AuthorizeRequestTokenForm):
                 try:
                     view_callable = get_callable(callback_view_str)
                 except AttributeError:
-                    raise Exception, "%s view doesn't exist." % callback_view_str
+                    raise Exception("%s view doesn't exist." % callback_view_str)
 
                 # try to treat it as Class Based View (CBV)
                 try:
@@ -114,7 +122,7 @@ def user_authorization(request, form_class=AuthorizeRequestTokenForm):
         try:
             view_callable = get_callable(authorize_view_str)
         except AttributeError:
-            raise Exception, "%s view doesn't exist." % authorize_view_str
+            raise Exception("%s view doesn't exist." % authorize_view_str)
 
         # try to treat it as Class Based View (CBV)
         try:
@@ -134,11 +142,11 @@ def user_authorization(request, form_class=AuthorizeRequestTokenForm):
 def access_token(request):
     oauth_request = get_oauth_request(request)
     if oauth_request is None:
-        return INVALID_PARAMS_RESPONSE
+        return GetInvalidParamsResponse()
 
     # Consumer
     try:
-        consumer = store.get_consumer(request, oauth_request, oauth_request['oauth_consumer_key'])
+        consumer = get_store_singleton().get_consumer(request, oauth_request, oauth_request['oauth_consumer_key'])
     except InvalidConsumerError:
         return HttpResponseBadRequest('Invalid consumer.')
 
@@ -157,7 +165,7 @@ def access_token(request):
 
         # Check Request Token
         try:
-            request_token = store.get_request_token(request, oauth_request, oauth_request['oauth_token'])
+            request_token = get_store_singleton().get_request_token(request, oauth_request, oauth_request['oauth_token'])
         except InvalidTokenError:
             return HttpResponseBadRequest('Invalid request token.')
         if not request_token.is_approved:
@@ -200,13 +208,13 @@ def access_token(request):
         
         # Handle Request Token
         try:
-            #request_token = store.create_request_token(request, oauth_request, consumer, oauth_request.get('oauth_callback'))
-            request_token = store.create_request_token(request, oauth_request, consumer, OUT_OF_BAND)
-            request_token = store.authorize_request_token(request, oauth_request, request_token)
-        except oauth.Error, err:
+            #request_token = get_store_singleton().create_request_token(request, oauth_request, consumer, oauth_request.get('oauth_callback'))
+            request_token = get_store_singleton().create_request_token(request, oauth_request, consumer, OUT_OF_BAND)
+            request_token = get_store_singleton().authorize_request_token(request, oauth_request, request_token)
+        except oauth.Error as err:
             return send_oauth_error(err)
 
-    access_token = store.create_access_token(request, oauth_request, consumer, request_token)
+    access_token = get_store_singleton().create_access_token(request, oauth_request, consumer, request_token)
 
     ret = urlencode({
         'oauth_token': access_token.key,

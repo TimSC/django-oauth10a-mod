@@ -1,11 +1,19 @@
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
+from __future__ import print_function
+
+import sys
 import oauth2 as oauth
-from urlparse import urlparse, urlunparse
+if sys.version_info.major < 3: 
+	import urlparse
+else:
+	import urllib.parse as urlparse
 
 from django.conf import settings
 from django.http import HttpResponse, HttpResponseBadRequest
 from django.contrib.auth import authenticate
 
-from consts import MAX_URL_LENGTH
+from .consts import MAX_URL_LENGTH
 
 OAUTH_REALM_KEY_NAME = getattr(settings, 'OAUTH_REALM_KEY_NAME', '')
 OAUTH_SIGNATURE_METHODS = getattr(settings, 'OAUTH_SIGNATURE_METHODS', ['plaintext', 'hmac-sha1'])
@@ -31,7 +39,7 @@ def send_oauth_error(err=None):
     response = HttpResponse(err.message.encode('utf-8'), status=401, content_type="text/plain")
     # return the authenticate header
     header = oauth.build_authenticate_header(realm=OAUTH_REALM_KEY_NAME)
-    for k, v in header.iteritems():
+    for k, v in header.items():
         response[k] = v
     return response
 
@@ -51,13 +59,13 @@ def get_oauth_request(request):
     parameters = {}
 
     if request.method == "POST" and request.META.get('CONTENT_TYPE') == "application/x-www-form-urlencoded":
-        parameters = dict((k, v.encode('utf-8')) for (k, v) in request.POST.iteritems())
+        parameters = dict((k, v.encode('utf-8')) for (k, v) in request.POST.items())
 
     absolute_uri = request.build_absolute_uri(request.path)
 
     if "HTTP_X_FORWARDED_PROTO" in request.META:
         scheme = request.META["HTTP_X_FORWARDED_PROTO"]
-        absolute_uri = urlunparse((scheme, ) + urlparse(absolute_uri)[1:])
+        absolute_uri = urlparse.urlunparse((scheme, ) + urlparse.urlparse(absolute_uri)[1:])
 
     return oauth.Request.from_request(request.method,
         absolute_uri,
@@ -68,10 +76,10 @@ def get_oauth_request(request):
 
 def verify_oauth_request(request, oauth_request, consumer, token=None):
     """ Helper function to verify requests. """
-    from store import store
+    from store import get_store_singleton
 
     # Check nonce
-    if not store.check_nonce(request, oauth_request, oauth_request['oauth_nonce'], oauth_request['oauth_timestamp']):
+    if not get_store_singleton().check_nonce(request, oauth_request, oauth_request['oauth_nonce'], oauth_request['oauth_timestamp']):
         return False
 
     # Verify request
@@ -86,7 +94,7 @@ def verify_oauth_request(request, oauth_request, consumer, token=None):
             token = oauth.Token(token.key.encode('ascii', 'ignore'), token.secret.encode('ascii', 'ignore'))
 
         oauth_server.verify_request(oauth_request, consumer, token)
-    except oauth.Error, err:
+    except oauth.Error as err:
         return False
 
     return True
@@ -133,7 +141,7 @@ def check_valid_callback(callback):
     """
     Checks the size and nature of the callback.
     """
-    callback_url = urlparse(callback)
+    callback_url = urlparse.urlparse(callback)
     return (callback_url.scheme
             and callback_url.hostname not in OAUTH_BLACKLISTED_HOSTNAMES
             and len(callback) < MAX_URL_LENGTH)

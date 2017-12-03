@@ -1,3 +1,7 @@
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
+from __future__ import print_function
+
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 
@@ -168,12 +172,18 @@ def get_store(path='oauth_provider.store.db.ModelStore'):
         store_class = getattr(importlib.import_module(module), attr)
     except ValueError:
         raise ImproperlyConfigured('Invalid oauth store string: "%s"' % path)
-    except ImportError, e:
+    except ImportError as e:
         raise ImproperlyConfigured('Error loading oauth store module "%s": "%s"' % (module, e))
     except AttributeError:
         raise ImproperlyConfigured('Module "%s" does not define an oauth store named "%s"' % (module, attr))
 
     return store_class()
 
+_gstore = None
 
-store = get_store()
+def get_store_singleton():
+	global _gstore
+	if _gstore is None:
+		_gstore = get_store()
+	return _gstore
+

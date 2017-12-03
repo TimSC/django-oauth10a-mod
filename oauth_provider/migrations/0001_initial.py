@@ -22,8 +22,8 @@ class Migration(migrations.Migration):
                 ('key', models.CharField(max_length=256)),
                 ('secret', models.CharField(max_length=16, blank=True)),
                 ('status', models.SmallIntegerField(default=1, choices=[(1, 'Pending'), (2, 'Accepted'), (3, 'Canceled'), (4, 'Rejected')])),
-                ('xauth_allowed', models.BooleanField(default=False, verbose_name=b'Allow xAuth')),
-                ('user', models.ForeignKey(blank=True, to=settings.AUTH_USER_MODEL, null=True)),
+                ('xauth_allowed', models.BooleanField(default=False, verbose_name='Allow xAuth')),
+                ('user', models.ForeignKey(on_delete=models.CASCADE, blank=True, to=settings.AUTH_USER_MODEL, null=True)),
             ],
             options={
             },
@@ -66,9 +66,9 @@ class Migration(migrations.Migration):
                 ('verifier', models.CharField(max_length=10)),
                 ('callback', models.CharField(max_length=2083, null=True, blank=True)),
                 ('callback_confirmed', models.BooleanField(default=False)),
-                ('consumer', models.ForeignKey(to='oauth_provider.Consumer')),
-                ('scope', models.ForeignKey(blank=True, to='oauth_provider.Scope', null=True)),
-                ('user', models.ForeignKey(related_name=b'tokens', blank=True, to=settings.AUTH_USER_MODEL, null=True)),
+                ('consumer', models.ForeignKey(on_delete=models.CASCADE, to='oauth_provider.Consumer')),
+                ('scope', models.ForeignKey(on_delete=models.CASCADE, blank=True, to='oauth_provider.Scope', null=True)),
+                ('user', models.ForeignKey(on_delete=models.CASCADE, related_name='tokens', blank=True, to=settings.AUTH_USER_MODEL, null=True)),
             ],
             options={
             },

@@ -1,3 +1,7 @@
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
+from __future__ import print_function
+
 import oauth2 as oauth
 
 try:
@@ -7,33 +11,33 @@ except ImportError:
 
 from django.utils.translation import ugettext as _
 
-from responses import INVALID_PARAMS_RESPONSE, INVALID_CONSUMER_RESPONSE, COULD_NOT_VERIFY_OAUTH_REQUEST_RESPONSE, INVALID_SCOPE_RESPONSE
-from utils import initialize_server_request, send_oauth_error, get_oauth_request, verify_oauth_request
-from consts import OAUTH_PARAMETERS_NAMES
-from store import store, InvalidTokenError, InvalidConsumerError
+from .responses import *
+from .utils import initialize_server_request, send_oauth_error, get_oauth_request, verify_oauth_request
+from .consts import OAUTH_PARAMETERS_NAMES
+from .store import get_store_singleton, InvalidTokenError, InvalidConsumerError
 from functools import wraps
 
 def DoOAuthCheck(request, scope_name, *args, **kwargs):
     oauth_request = get_oauth_request(request)
     if oauth_request is None:
-        return False, INVALID_PARAMS_RESPONSE, None
+        return False, GetInvalidParamsResponse(), None
 
     try:
-        consumer = store.get_consumer(request, oauth_request, oauth_request['oauth_consumer_key'])
+        consumer = get_store_singleton().get_consumer(request, oauth_request, oauth_request['oauth_consumer_key'])
     except InvalidConsumerError:
-        return False, INVALID_CONSUMER_RESPONSE, None
+        return False, GetInvalidConsumerResponse(), None
 
     try:
-        token = store.get_access_token(request, oauth_request, consumer, oauth_request.get_parameter('oauth_token'))
+        token = get_store_singleton().get_access_token(request, oauth_request, consumer, oauth_request.get_parameter('oauth_token'))
     except InvalidTokenError:
         return False, send_oauth_error(oauth.Error(_('Invalid access token: %s') % oauth_request.get_parameter('oauth_token'))), None
 
     if not verify_oauth_request(request, oauth_request, consumer, token):
-        return False, COULD_NOT_VERIFY_OAUTH_REQUEST_RESPONSE, None
+        return False, GetCouldNotVerifyOAuthRequestResponse(), None
 
     if bool(scope_name) and (not token.scope
                             or token.scope.name != scope_name):
-        return False, INVALID_SCOPE_RESPONSE, None
+        return False, GetInvalidScopeResponse(), None
 
     return True, None, token.user
 

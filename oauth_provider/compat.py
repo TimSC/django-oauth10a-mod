@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
+from __future__ import unicode_literals
+from __future__ import print_function
+
 import django
 
 # location of patterns, url, include changes in 1.4 onwards
