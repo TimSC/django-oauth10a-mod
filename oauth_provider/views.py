@@ -5,9 +5,10 @@ from __future__ import print_function
 import sys
 if sys.version_info.major < 3: 
 	import urlparse
+	from urllib import urlencode
 else:
 	import urllib.parse as urlparse
-from urllib import urlencode
+	from urllib.parse import urlencode
 
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
