@@ -60,3 +60,10 @@ if django.VERSION >= (1, 4):
             self["Location"] = url
 else:
     from django.http import HttpResponseRedirect as UnsafeRedirect
+
+
+try:
+	from django.urls import get_callable
+except ImportError:
+	from django.core.urlresolvers import get_callable
+

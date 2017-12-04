@@ -145,3 +145,4 @@ def check_valid_callback(callback):
     return (callback_url.scheme
             and callback_url.hostname not in OAUTH_BLACKLISTED_HOSTNAMES
             and len(callback) < MAX_URL_LENGTH)
+

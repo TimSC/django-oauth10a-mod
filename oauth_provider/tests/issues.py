@@ -16,7 +16,7 @@ import oauth2 as oauth
 from oauth_provider.tests.auth import BaseOAuthTestCase, METHOD_AUTHORIZATION_HEADER
 from oauth_provider.models import Token, Scope
 from oauth_provider import utils, responses
-from oauth_provider.store import store as oauth_provider_store
+from oauth_provider.store import get_store_singleton as oauth_provider_store
 
 
 class OAuthTestsBug10(BaseOAuthTestCase):
@@ -100,10 +100,10 @@ class OauthTestIssue24(BaseOAuthTestCase):
         oauth_request = utils.get_oauth_request(request)
 
         consumer_key = oauth_request.get_parameter('oauth_consumer_key')
-        consumer = oauth_provider_store.get_consumer(request, oauth_request, consumer_key)
+        consumer = oauth_provider_store().get_consumer(request, oauth_request, consumer_key)
 
         token_param = oauth_request.get_parameter('oauth_token')
-        token = oauth_provider_store.get_access_token(request, oauth_request, consumer, token_param)
+        token = oauth_provider_store().get_access_token(request, oauth_request, consumer, token_param)
 
         oauth_server, oauth_request = utils.initialize_server_request(request)
 
@@ -189,10 +189,10 @@ class OauthTestIssue24(BaseOAuthTestCase):
         oauth_request = utils.get_oauth_request(request)
 
         consumer_key = oauth_request.get_parameter('oauth_consumer_key')
-        consumer = oauth_provider_store.get_consumer(request, oauth_request, consumer_key)
+        consumer = oauth_provider_store().get_consumer(request, oauth_request, consumer_key)
 
         token_param = oauth_request.get_parameter('oauth_token')
-        token = oauth_provider_store.get_access_token(request, oauth_request, consumer, token_param)
+        token = oauth_provider_store().get_access_token(request, oauth_request, consumer, token_param)
 
         oauth_server, oauth_request = utils.initialize_server_request(request)
 
@@ -271,7 +271,8 @@ class OAuthTestIssue41XForwardedProto(BaseOAuthTestCase):
             "HTTP_AUTHORIZATION": self._make_GET_auth_header(url),
         }
         response = self.c.get(url.replace('https', 'http'), **kwargs)
-        assert response == responses.GetCouldNotVerifyOAuthRequestResponse()
+
+        assert response.content == responses.GetCouldNotVerifyOAuthRequestResponse().content
         self.assertEqual(response.status_code, 401)
 
         url = "http://testserver:80/oauth/none/"
@@ -281,7 +282,7 @@ class OAuthTestIssue41XForwardedProto(BaseOAuthTestCase):
             "HTTP_AUTHORIZATION": self._make_GET_auth_header(url),
         }
         response = self.c.get(url.replace('http', 'https'), **kwargs)
-        assert response == responses.GetCouldNotVerifyOAuthRequestResponse()
+        assert response.content == responses.GetCouldNotVerifyOAuthRequestResponse().content
         self.assertEqual(response.status_code, 401)
 
     def test_when_x_forwarded_proto_header_has_valid_protocol(self):

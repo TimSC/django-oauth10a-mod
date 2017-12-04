@@ -7,6 +7,7 @@ if sys.version_info.major < 3:
 	import urlparse
 else:
 	import urllib.parse as urlparse
+from urllib import urlencode
 
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
@@ -14,13 +15,12 @@ from django.contrib.auth import authenticate
 from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseRedirect
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.translation import ugettext as _
-from django.urls import get_callable
 
 import oauth2 as oauth
 
 from .decorators import oauth_required
 from .forms import AuthorizeRequestTokenForm
-from oauth_provider.compat import UnsafeRedirect
+from oauth_provider.compat import UnsafeRedirect, get_callable
 from .responses import *
 from .store import get_store_singleton, InvalidConsumerError, InvalidTokenError
 from .utils import verify_oauth_request, get_oauth_request, require_params, send_oauth_error
@@ -90,7 +90,7 @@ def user_authorization(request, form_class=AuthorizeRequestTokenForm):
                 args = { 'oauth_token': request_token.key }
             else:
                 args = { 'error': _('Access not granted by user.') }
-            if request_token.callback is not None and request_token.callback != OUT_OF_BAND:
+            if request_token.callback is not None and request_token.callback not in OUT_OF_BAND:
                 callback_url = request_token.get_callback_url(args)
                 if UNSAFE_REDIRECTS:
                     response = UnsafeRedirect(callback_url)
@@ -209,7 +209,7 @@ def access_token(request):
         # Handle Request Token
         try:
             #request_token = get_store_singleton().create_request_token(request, oauth_request, consumer, oauth_request.get('oauth_callback'))
-            request_token = get_store_singleton().create_request_token(request, oauth_request, consumer, OUT_OF_BAND)
+            request_token = get_store_singleton().create_request_token(request, oauth_request, consumer, OUT_OF_BAND[0])
             request_token = get_store_singleton().authorize_request_token(request, oauth_request, request_token)
         except oauth.Error as err:
             return send_oauth_error(err)

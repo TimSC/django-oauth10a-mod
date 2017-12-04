@@ -7,8 +7,8 @@ from django.test import TestCase
 
 class Issue45ErrorLoadingOauthStoreModule(TestCase):
     def test_store_import(self):
-        from oauth_provider.store import store
-        self.assertIsNotNone(store)
+        from oauth_provider.store import get_store_singleton
+        self.assertIsNotNone(get_store_singleton())
 
     def test_import_user_from_compat(self):
         from oauth_provider.compat import get_user_model
