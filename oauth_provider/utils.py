@@ -76,7 +76,7 @@ def get_oauth_request(request):
 
 def verify_oauth_request(request, oauth_request, consumer, token=None):
     """ Helper function to verify requests. """
-    from store import get_store_singleton
+    from .store import get_store_singleton
 
     # Check nonce
     if not get_store_singleton().check_nonce(request, oauth_request, oauth_request['oauth_nonce'], oauth_request['oauth_timestamp']):

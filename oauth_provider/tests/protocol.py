@@ -271,7 +271,7 @@ class ProtocolExample(BaseOAuthTestCase):
 
         response = self.c.get("/oauth/access_token/", parameters)
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.content, 'Request Token not approved by the user.')
+        self.assertEqual(response.content, b'Request Token not approved by the user.')
 
     def test_error_accessing_protected_resource(self):
         request_token = self._obtain_request_token()
@@ -291,7 +291,7 @@ class ProtocolExample(BaseOAuthTestCase):
         response = self.c.get("/oauth/photo/")
 
         self.assertEqual(response.status_code, 401)
-        self.assertEqual(response.content, 'Invalid request parameters.')
+        self.assertEqual(response.content, b'Invalid request parameters.')
 
     def test_positive(self):
         # Then consumer obtains a Request Token

@@ -2,14 +2,6 @@
 from __future__ import unicode_literals
 from __future__ import print_function
 
-import sys
-if sys.version_info.major < 3: 
-	import urlparse
-	from urllib import urlencode
-else:
-	import urllib.parse as urlparse
-	from urllib.parse import urlencode
-
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate
@@ -21,7 +13,7 @@ import oauth2 as oauth
 
 from .decorators import oauth_required
 from .forms import AuthorizeRequestTokenForm
-from oauth_provider.compat import UnsafeRedirect, get_callable
+from oauth_provider.compat import UnsafeRedirect, get_callable, urlparse, urlencode
 from .responses import *
 from .store import get_store_singleton, InvalidConsumerError, InvalidTokenError
 from .utils import verify_oauth_request, get_oauth_request, require_params, send_oauth_error

@@ -6,7 +6,7 @@ import time
 import urllib
 import json
 import datetime
-from urlparse import parse_qs, urlparse
+from ..compat import parse_qs, urlparse
 
 from django.conf import settings
 from django.test.client import RequestFactory

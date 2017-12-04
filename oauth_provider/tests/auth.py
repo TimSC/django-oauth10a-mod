@@ -5,7 +5,7 @@ from __future__ import print_function
 import time
 import urllib
 import re
-from urlparse import parse_qs, urlparse
+from ..compat import parse_qs, urlparse, urlencode
 from django.test import TestCase, Client
 
 import oauth2 as oauth
@@ -60,7 +60,7 @@ class BaseOAuthTestCase(TestCase):
         elif method==METHOD_URL_QUERY:
             response = self.c.get("/oauth/request_token/", parameters)
         elif method==METHOD_POST_REQUEST_BODY:
-            body = urllib.urlencode(parameters)
+            body = urlencode(parameters)
             response = self.c.post("/oauth/request_token/", body, content_type="application/x-www-form-urlencoded")
         else:
             raise NotImplementedError
@@ -125,7 +125,7 @@ class BaseOAuthTestCase(TestCase):
         elif method==METHOD_URL_QUERY:
             response = self.c.get("/oauth/access_token/", parameters)
         elif method==METHOD_POST_REQUEST_BODY:
-            body = urllib.urlencode(parameters)
+            body = urlencode(parameters)
             response = self.c.post("/oauth/access_token/", body, content_type="application/x-www-form-urlencoded")
         else:
             raise NotImplementedError

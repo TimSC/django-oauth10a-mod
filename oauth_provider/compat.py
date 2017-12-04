@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 from __future__ import print_function
 
 import django
+import sys
 
 # location of patterns, url, include changes in 1.4 onwards
 
@@ -66,4 +67,10 @@ try:
 	from django.urls import get_callable
 except ImportError:
 	from django.core.urlresolvers import get_callable
+
+if sys.version_info.major < 3: 
+	from urllib import urlencode
+	from urlparse import urlparse, parse_qs
+else:
+	from urllib.parse import urlencode, parse_qs, urlparse
 

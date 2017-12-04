@@ -4,7 +4,7 @@ from __future__ import print_function
 
 from oauth_provider.compat import url
 
-from views import request_token, user_authorization, access_token
+from .views import request_token, user_authorization, access_token
 
 urlpatterns = [
     url(r'^request_token/$',    request_token,      name='oauth_request_token'),
