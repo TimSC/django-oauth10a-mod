@@ -72,7 +72,7 @@ class Token(models.Model):
     ACCESS = 2
     TOKEN_TYPES = ((REQUEST, u'Request'), (ACCESS, u'Access'))
     
-    key = models.CharField(max_length=KEY_SIZE, primary_key=True)
+    key = models.CharField(max_length=KEY_SIZE, primary_key=True, default='')
     secret = models.CharField(max_length=SECRET_SIZE, null=True, blank=True)
     token_type = models.SmallIntegerField(choices=TOKEN_TYPES)
     timestamp = models.IntegerField(default=default_token_timestamp)
