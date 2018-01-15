@@ -13,12 +13,12 @@ install_requires = reqs('requirements.txt')
 test_requires = reqs('test-requirements.txt')
 
 setup(
-    name='django-oauth-plus',
+    name='django-oauth-plus-mod',
     version=version,
-    description='Support of OAuth 1.0a in Django using python-oauth2.',
-    author='David Larlet',
-    author_email='david@larlet.fr',
-    url='https://bitbucket.org/david/django-oauth-plus/',
+    description='Support of OAuth 1.0a in Django using python-oauth10a.',
+    author='Tim Sheerman-Chase',
+    author_email='dev@kinatomic.com',
+    url='https://github.com/TimSC/django-oauth-plus-mod',
     packages=find_packages(),
     license='BSD',
     classifiers=[
@@ -31,13 +31,12 @@ setup(
         'Programming Language :: Python :: 2',
         'Programming Language :: Python :: 2.6',
         'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python :: 3',
         'Framework :: Django',
-        'Framework :: Django :: 1.4',
-        'Framework :: Django :: 1.5',
-        'Framework :: Django :: 1.6',
-        'Framework :: Django :: 1.7',
         'Framework :: Django :: 1.8',
-        'Framework :: Django :: 1.9',
+        'Framework :: Django :: 1.10',
+        'Framework :: Django :: 1.11',
+        'Framework :: Django :: 2.0',
     ],
     # Make setuptools include all data files under version control,
     # svn and CVS by default

@@ -9,7 +9,7 @@ try:
 except ImportError:
     from django.utils.unittest import skipIf
 
-import oauth2 as oauth
+import oauth10a as oauth
 
 from django.test import Client
 from django.http import HttpResponse

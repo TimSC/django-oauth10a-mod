@@ -11,7 +11,7 @@ from ..compat import parse_qs, urlparse
 from django.conf import settings
 from django.test.client import RequestFactory
 
-import oauth2 as oauth
+import oauth10a as oauth
 
 from oauth_provider.tests.auth import BaseOAuthTestCase, METHOD_AUTHORIZATION_HEADER
 from oauth_provider.models import Token, Scope

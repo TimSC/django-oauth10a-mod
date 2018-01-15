@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 from __future__ import print_function
 
-import oauth2 as oauth
+import oauth10a as oauth
 
 try:
     from functools import update_wrapper

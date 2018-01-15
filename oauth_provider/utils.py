@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 from __future__ import print_function
 
 import sys
-import oauth2 as oauth
+import oauth10a as oauth
 if sys.version_info.major < 3: 
 	import urlparse
 else:
@@ -44,7 +44,7 @@ def send_oauth_error(err=None):
     return response
 
 def get_oauth_request(request):
-    """ Converts a Django request object into an `oauth2.Request` object. """
+    """ Converts a Django request object into an `oauth10a.Request` object. """
     # Django converts Authorization header in HTTP_AUTHORIZATION
     # Warning: it doesn't happen in tests but it's useful, do not remove!
     auth_header = {}

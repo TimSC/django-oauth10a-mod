@@ -9,7 +9,7 @@ from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseRedire
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.translation import ugettext as _
 
-import oauth2 as oauth
+import oauth10a as oauth
 
 from .decorators import oauth_required
 from .forms import AuthorizeRequestTokenForm

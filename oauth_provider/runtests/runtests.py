@@ -46,7 +46,7 @@ def main():
     if django.VERSION >= (1, 6):
         # due to some changes in Django>=1.6 test runner
         # if you not specify app then simply any `test` package
-        # could be run e.g. `tests` provided by broken oauth2 package (sic!)
+        # could be run e.g. `tests` provided by broken oauth10a package (sic!)
         test_prefix = 'oauth_provider.tests'
     else:
         # old test runner won't accept above prefix

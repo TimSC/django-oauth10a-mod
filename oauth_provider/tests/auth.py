@@ -8,7 +8,7 @@ import re
 from ..compat import parse_qs, urlparse, urlencode
 from django.test import TestCase, Client
 
-import oauth2 as oauth
+import oauth10a as oauth
 
 from oauth_provider.models import Scope, Consumer, Token
 from oauth_provider.compat import get_user_model

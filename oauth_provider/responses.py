@@ -5,7 +5,7 @@ from __future__ import print_function
 from django.utils.translation import ugettext as _
 from django.http import HttpResponseBadRequest
 
-import oauth2 as oauth
+import oauth10a as oauth
 
 from oauth_provider.utils import send_oauth_error
 

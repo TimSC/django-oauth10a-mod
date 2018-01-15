@@ -50,7 +50,7 @@ class Store(object):
         Return the Consumer for `consumer_key` or raise `InvalidConsumerError`.
 
         `request`: The Django request object.
-        `oauth_request`: The `oauth2.Request` object.
+        `oauth_request`: The `oauth10a.Request` object.
         `consumer_key`: The consumer key.
         """
         raise NotImplementedError
@@ -60,7 +60,7 @@ class Store(object):
         Return the Consumer associated with the `request_token` Token.
 
         `request`: The Django request object.
-        `oauth_request`: The `oauth2.Request` object.
+        `oauth_request`: The `oauth10a.Request` object.
         `request_token`: The request token to get the consumer for.
         """
         raise NotImplementedError
@@ -70,7 +70,7 @@ class Store(object):
         Return the Consumer associated with the `access_token` Token.
 
         `request`: The Django request object.
-        `oauth_request`: The `oauth2.Request` object.
+        `oauth_request`: The `oauth10a.Request` object.
         `access_token`: The access Token to get the consumer for.
         """
         raise NotImplementedError
@@ -80,7 +80,7 @@ class Store(object):
         Generate and return a Token.
 
         `request`: The Django request object.
-        `oauth_request`: The `oauth2.Request` object.
+        `oauth_request`: The `oauth10a.Request` object.
         `consumer`: The Consumer that made the request.
         """
         raise NotImplementedError
@@ -90,7 +90,7 @@ class Store(object):
         Return the Token for `request_token_key` or raise `InvalidTokenError`.
 
         `request`: The Django request object.
-        `oauth_request`: The `oauth2.Request` object.
+        `oauth_request`: The `oauth10a.Request` object.
         `consumer`: The Consumer that made the request.
         `request_token_key`: The request token key.
         """
@@ -101,7 +101,7 @@ class Store(object):
         Authorize the `request_token` Token and return it.
 
         `request`: The Django request object.
-        `oauth_request`: The `oauth2.Request` object.
+        `oauth_request`: The `oauth10a.Request` object.
         `request_token`: The request token to authorize.
         """
         raise NotImplementedError
@@ -111,7 +111,7 @@ class Store(object):
         Generate and return a Token.
 
         `request`: The Django request object.
-        `oauth_request`: The `oauth2.Request` object.
+        `oauth_request`: The `oauth10a.Request` object.
         `consumer`: The Consumer that made the request.
         `request_token`: The Token used to make the request.
         """
@@ -122,7 +122,7 @@ class Store(object):
         Return the Token for `access_token_key` or raise `InvalidTokenError`.
 
         `request`: The Django request object.
-        `oauth_request`: The `oauth2.Request` object.
+        `oauth_request`: The `oauth10a.Request` object.
         `consumer`: The Consumer that made the request.
         `access_token_key`: The token key used to make the request.
         """
@@ -133,7 +133,7 @@ class Store(object):
         Return the associated User for `access_token`.
 
         `request`: The Django request object.
-        `oauth_request`: The `oauth2.Request` object.
+        `oauth_request`: The `oauth10a.Request` object.
         `consumer`: The Consumer that made the request.
         `access_token`: The Token used to make the request.
         """
@@ -144,7 +144,7 @@ class Store(object):
         Return the associated User for `consumer`.
         
         `request`: The Django request object.
-        `oauth_request`: The `oauth2.Request` object.
+        `oauth_request`: The `oauth10a.Request` object.
         `consumer`: The Consumer that made the request.
         """
         raise NotImplementedError
@@ -154,7 +154,7 @@ class Store(object):
         Return `True` if the nonce has not yet been used, `False` otherwise.
 
         `request`: The Django request object.
-        `oauth_request`: The `oauth2.Request` object.
+        `oauth_request`: The `oauth10a.Request` object.
         `nonce`: The nonce to check.
         `timestamp`: nonce timestamp.
         """

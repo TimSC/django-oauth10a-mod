@@ -10,7 +10,7 @@ else:
 	import urllib.parse as urlparse
 from time import time
 import warnings
-import oauth2 as oauth
+import oauth10a as oauth
 from django.db import models
 
 from oauth_provider.compat import AUTH_USER_MODEL

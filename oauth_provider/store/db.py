@@ -1,4 +1,4 @@
-import oauth2 as oauth
+import oauth10a as oauth
 
 from django.conf import settings
 from oauth_provider.compat import now
