@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 from __future__ import print_function
 
 import django.core.validators
-from compat import get_user_model
+from .compat import get_user_model
 
 User = get_user_model()
 

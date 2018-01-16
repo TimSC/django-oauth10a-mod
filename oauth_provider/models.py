@@ -6,8 +6,10 @@ import sys
 import urllib
 if sys.version_info.major < 3: 
 	import urlparse
+	from urllib import urlencode
 else:
 	import urllib.parse as urlparse
+	from urllib.parse import urlencode
 from time import time
 import warnings
 import oauth10a as oauth
@@ -64,8 +66,10 @@ class Consumer(models.Model):
         return u"Consumer %s with key %s" % (self.name, self.key)
 
 def default_token_timestamp():
-    return long(time())
-
+    if sys.version_info.major < 3: 
+        return long(time())
+    else:
+        return int(time())
 
 class Token(models.Model):
     REQUEST = 1
@@ -113,7 +117,7 @@ class Token(models.Model):
             del token_dict['oauth_token_secret']
             del token_dict['oauth_callback_confirmed']
 
-        return urllib.urlencode(token_dict)
+        return urlencode(token_dict)
 
     def get_callback_url(self, args=None):
         """
@@ -133,10 +137,10 @@ class Token(models.Model):
                 path = "?".join(path[:-1])
 
             if args is not None:
-                query += "&%s" % urllib.urlencode(args)
+                query += "&%s" % urlencode(args)
             return urlparse.urlunparse((scheme, netloc, path, params,
                 query, fragment))
-        args = args is not None and "?%s" % urllib.urlencode(args) or ""
+        args = args is not None and "?%s" % urlencode(args) or ""
         return self.callback and self.callback + args
 
     def set_callback(self, callback):

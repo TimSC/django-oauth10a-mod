@@ -70,13 +70,13 @@ class BaseOAuthTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
 
         response_qs = parse_qs(response.content)
-        self.assert_(response_qs['oauth_token_secret'])
-        self.assert_(response_qs['oauth_token'])
-        self.assertEqual(response_qs['oauth_callback_confirmed'], ['true'])
+        self.assert_(response_qs[b'oauth_token_secret'])
+        self.assert_(response_qs[b'oauth_token'])
+        self.assertEqual(response_qs[b'oauth_callback_confirmed'], [b'true'])
 
         token = self.request_token = list(Token.objects.all())[-1]
-        self.assert_(token.key in response.content)
-        self.assert_(token.secret in response.content)
+        self.assert_(token.key.encode('utf-8') in response.content)
+        self.assert_(token.secret.encode('utf-8') in response.content)
         self.assert_(not self.request_token.is_approved)
         return response
 
@@ -131,7 +131,7 @@ class BaseOAuthTestCase(TestCase):
             raise NotImplementedError
 
         self.assertEqual(response.status_code, 200)
-        response_params = parse_qs(response.content)
+        response_params = parse_qs(response.content.decode('utf-8'))
         self.ACCESS_TOKEN_KEY = response_params['oauth_token'][0]
         self.ACCESS_TOKEN_SECRET = response_params['oauth_token_secret'][0]
 

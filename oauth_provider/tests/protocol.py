@@ -77,7 +77,7 @@ class ProtocolExample(BaseOAuthTestCase):
         response = self.c.get("/oauth/request_token/")
         self.assertEqual(response.status_code, 401)
         self.assertEqual(response._headers['www-authenticate'], ('WWW-Authenticate', 'OAuth realm=""'))
-        self.assertEqual(response.content, 'Invalid request parameters.')
+        self.assertEqual(response.content, b'Invalid request parameters.')
 
     @skipIf(not hasattr(HttpResponse, 'reason_phrase'), 'Can\'t easilty test in prev versions')
     def test_returns_correct_reason_phrase(self):
@@ -92,7 +92,7 @@ class ProtocolExample(BaseOAuthTestCase):
         parameters['oauth_nonce'] = 'requestnoncewrongcallback'
         response = self.c.get("/oauth/request_token/", parameters)
         self.assertEqual(response.status_code, 401)
-        self.assertEqual(response.content, 'Invalid callback URL.')
+        self.assertEqual(response.content, b'Invalid callback URL.')
 
     def test_401_for_wrong_scope(self):
         # If you try to access a resource with a wrong scope, it will return an error
@@ -103,7 +103,7 @@ class ProtocolExample(BaseOAuthTestCase):
         response = self.c.get("/oauth/request_token/", parameters)
 
         self.assertEqual(response.status_code, 401)
-        self.assertEqual(response.content, 'Scope does not exist.')
+        self.assertEqual(response.content, b'Scope does not exist.')
 
     def test_oob_callback(self):
         # If you do not provide any callback (i.e. oob), the Service Provider SHOULD display the value of the verification code
@@ -116,8 +116,8 @@ class ProtocolExample(BaseOAuthTestCase):
         response_params = cgi.parse_qs(response.content)
         oob_token = self._last_created_request_token()
 
-        self.assertTrue(oob_token.key in response_params['oauth_token'])
-        self.assertTrue(oob_token.secret in response_params['oauth_token_secret'])
+        self.assertTrue(oob_token.key.encode('utf-8') in response_params[b'oauth_token'])
+        self.assertTrue(oob_token.secret.encode('utf-8') in response_params[b'oauth_token_secret'])
         self.assertFalse(oob_token.callback_confirmed)
         self.assertIsNone(oob_token.callback)
 
@@ -127,9 +127,9 @@ class ProtocolExample(BaseOAuthTestCase):
         response_params = cgi.parse_qs(response.content)
         last_token = self._last_created_request_token()
 
-        self.assertTrue(last_token.key in response_params['oauth_token'])
-        self.assertTrue(last_token.secret in response_params['oauth_token_secret'])
-        self.assertTrue(response_params['oauth_callback_confirmed'])
+        self.assertTrue(last_token.key.encode('utf-8') in response_params[b'oauth_token'])
+        self.assertTrue(last_token.secret.encode('utf-8') in response_params[b'oauth_token_secret'])
+        self.assertTrue(response_params[b'oauth_callback_confirmed'])
 
     def _obtain_request_token(self):
         parameters = self._make_request_token_parameters()
@@ -171,7 +171,7 @@ class ProtocolExample(BaseOAuthTestCase):
         # without session parameter (previous POST removed it)
         response = self.c.post("/oauth/authorize/", parameters)
         self.assertEqual(response.status_code, 401)
-        self.assertEqual(response.content, 'Action not allowed.')
+        self.assertEqual(response.content, b'Action not allowed.')
 
     def test_access_not_granted_by_the_user(self):
         token = self._obtain_request_token()
@@ -212,8 +212,8 @@ class ProtocolExample(BaseOAuthTestCase):
         access_token = self._last_created_access_token()
 
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response_params['oauth_token'][0], access_token.key)
-        self.assertEqual(response_params['oauth_token_secret'][0], access_token.secret)
+        self.assertEqual(response_params[b'oauth_token'][0], access_token.key.encode('utf-8'))
+        self.assertEqual(response_params[b'oauth_token_secret'][0], access_token.secret.encode('utf-8'))
         self.assertEqual(access_token.user.username, 'jane')
 
         return access_token
@@ -231,7 +231,7 @@ class ProtocolExample(BaseOAuthTestCase):
         parameters = self._make_access_token_parameters(request_token)
         response = self.c.get("/oauth/access_token/", parameters)
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.content, 'Invalid request token.')
+        self.assertEqual(response.content, b'Invalid request token.')
 
     def test_request_access_token_invalid_verifier(self):
         """The Consumer will not be able to request another Access Token
@@ -252,7 +252,7 @@ class ProtocolExample(BaseOAuthTestCase):
         parameters['oauth_verifier'] = 'invalidverifier'
         response = self.c.get("/oauth/access_token/", parameters)
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.content, 'Invalid OAuth verifier.')
+        self.assertEqual(response.content, b'Invalid OAuth verifier.')
 
     def test_request_access_token_not_approved_request_token(self):
         """The Consumer will not be able to request an Access Token if the token is not approved
@@ -286,7 +286,7 @@ class ProtocolExample(BaseOAuthTestCase):
         response = self.c.get("/oauth/photo/", parameters)
 
         self.assertEqual(response.status_code, 401)
-        self.assertTrue(response.content.startswith('Could not verify OAuth request.'))
+        self.assertTrue(response.content.startswith(b'Could not verify OAuth request.'))
 
         response = self.c.get("/oauth/photo/")
 
@@ -326,7 +326,7 @@ class ProtocolExample(BaseOAuthTestCase):
         response = self.c.get("/oauth/authorize/", parameters)
         self.assertEqual(response.status_code, 200)
         self.assertTrue(response.content.startswith(
-            'Fake authorize view for printer.example.com with params: oauth_token='))
+            b'Fake authorize view for printer.example.com with params: oauth_token='))
 
         # Jane approves the request.
         self.assertEqual(token.is_approved, 0)  # token is not approved yet
@@ -361,8 +361,8 @@ class ProtocolExample(BaseOAuthTestCase):
         response_params = cgi.parse_qs(response.content)
         access_token = list(Token.objects.filter(token_type=Token.ACCESS))[-1]
 
-        self.assertEqual(response_params['oauth_token'][0], access_token.key)
-        self.assertEqual(response_params['oauth_token_secret'][0], access_token.secret)
+        self.assertEqual(response_params[b'oauth_token'][0], access_token.key.encode('utf-8'))
+        self.assertEqual(response_params[b'oauth_token_secret'][0], access_token.secret.encode('utf-8'))
         self.assertEqual(access_token.user.username, 'jane')
 
         ## Accessing protected resources
@@ -397,7 +397,7 @@ class ProtocolExample(BaseOAuthTestCase):
         parameters['oauth_signature'] = signature
         response = self.c.get("/oauth/photo/", parameters)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.content, 'Protected Resource access!')
+        self.assertEqual(response.content, b'Protected Resource access!')
 
         # Revoking Access
         # If Jane deletes the Access Token of printer.example.com,
@@ -410,4 +410,4 @@ class ProtocolExample(BaseOAuthTestCase):
         parameters['oauth_nonce'] = 'yetanotheraccessscopenonce'
         response = self.c.get(self.scope.url, parameters)
         self.assertEqual(response.status_code, 401)
-        self.assertTrue(response.content.startswith('Invalid access token:'))
+        self.assertTrue(response.content.startswith(b'Invalid access token:'))

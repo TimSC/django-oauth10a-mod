@@ -3,11 +3,15 @@ from __future__ import unicode_literals
 from __future__ import print_function
 
 from pprint import pprint
+import sys
 import time
-import urllib
 from oauth_provider.models import Scope
 from oauth_provider.tests.auth import BaseOAuthTestCase, METHOD_POST_REQUEST_BODY, METHOD_AUTHORIZATION_HEADER, METHOD_URL_QUERY
 
+if sys.version_info.major < 3: 
+	from urllib import urlencode
+else:
+	from urllib.parse import urlencode
 
 class OAuthTestOauthRequiredDecorator(BaseOAuthTestCase):
     def setUp(self):
@@ -32,7 +36,7 @@ class OAuthTestOauthRequiredDecorator(BaseOAuthTestCase):
         elif method==METHOD_URL_QUERY:
             response = self.c.get(url, parameters)
         elif method==METHOD_POST_REQUEST_BODY:
-            body = urllib.urlencode(parameters)
+            body = urlencode(parameters)
             response = self.c.post(url, body, content_type="application/x-www-form-urlencoded")
         else:
             raise NotImplementedError

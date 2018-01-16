@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 from __future__ import print_function
 
+import sys
 import time
 import urllib
 import json
@@ -18,6 +19,10 @@ from oauth_provider.models import Token, Scope
 from oauth_provider import utils, responses
 from oauth_provider.store import get_store_singleton as oauth_provider_store
 
+if sys.version_info.major < 3: 
+	from urllib import urlencode
+else:
+	from urllib.parse import urlencode
 
 class OAuthTestsBug10(BaseOAuthTestCase):
     """
@@ -90,7 +95,7 @@ class OauthTestIssue24(BaseOAuthTestCase):
 
         data = json.dumps({"data": {"foo": "bar"}})
         content_type = "application/json"
-        querystring = self._make_querystring_with_HMAC_SHA1("POST", "/path/to/post", data, content_type)
+        querystring = self._make_querystring_with_HMAC_SHA1("POST", "/path/to/post", data.encode('utf-8'), content_type)
 
         #we're just using the request, don't bother faking sending it
         rf = RequestFactory()
@@ -145,7 +150,7 @@ class OauthTestIssue24(BaseOAuthTestCase):
             'oauth_signature': "%s&%s" % (self.CONSUMER_SECRET, self.ACCESS_TOKEN_SECRET),
             "additional_data": "whoop"  # additional data
         }
-        response = self.c.post("/oauth/photo/", urllib.urlencode(parameters, True),
+        response = self.c.post("/oauth/photo/", urlencode(parameters, True),
             content_type="application/x-www-form-urlencoded")
         self.assertEqual(response.status_code, 200)
 
@@ -182,7 +187,7 @@ class OauthTestIssue24(BaseOAuthTestCase):
 
         #we're just using the request, don't bother faking sending it
         rf = RequestFactory()
-        request = rf.post(querystring, urllib.urlencode(data), content_type)
+        request = rf.post(querystring, urlencode(data), content_type)
 
         # this is basically a "remake" of the relevant parts of
         # OAuthAuthentication in django-rest-framework
@@ -425,11 +430,11 @@ class OAuthTestIssue44PostRequestBodyInSignature(BaseOAuthTestCase):
         content_type = "application/x-www-form-urlencoded"
         header = self._make_auth_header_with_HMAC_SHA1('post', "/oauth/photo/", get_params, body_params, True)
 
-        body = urllib.urlencode(body_params)
+        body = urlencode(body_params)
 
         response = self.c.post(
             # this is workaround to have both POST & GET params in this request
-            "/oauth/photo/?%s" % urllib.urlencode(get_params),
+            "/oauth/photo/?%s" % urlencode(get_params),
             data=body,
             HTTP_AUTHORIZATION=header["Authorization"],
             content_type=content_type
@@ -454,11 +459,11 @@ class OAuthTestIssue44PostRequestBodyInSignature(BaseOAuthTestCase):
         content_type = "application/x-www-form-urlencoded"
         header = self._make_auth_header_with_HMAC_SHA1('post', "/oauth/photo/", get_params, {}, True)
 
-        body = urllib.urlencode(body_params)
+        body = urlencode(body_params)
 
         response = self.c.post(
             # this is workaround to have both POST & GET params in this request
-            "/oauth/photo/?%s" % urllib.urlencode(get_params),
+            "/oauth/photo/?%s" % urlencode(get_params),
             data=body,
             HTTP_AUTHORIZATION=header["Authorization"],
             content_type=content_type
@@ -474,7 +479,7 @@ class OAuthTestIssue44PostRequestBodyInSignature(BaseOAuthTestCase):
 
         url = "http://testserver:80" + path
 
-        body = urllib.urlencode(body_params)
+        body = urlencode(body_params)
 
         params = {}
         params.update(get_params)
