@@ -1,4 +1,5 @@
 import os
+import django
 ROOT_PATH = os.path.dirname(__file__)
 
 TEMPLATE_DEBUG = DEBUG = True
@@ -34,11 +35,15 @@ AUTHENTICATION_BACKENDS = (
     'oauth_provider.backends.XAuthAuthenticationBackend',
 )
 
-MIDDLEWARE_CLASSES = (
+MIDDLEWARE = (
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
 )
+
+if django.VERSION[0] == 1 and django.VERSION[1] < 10:
+	MIDDLEWARE_CLASSES = MIDDLEWARE
+
 ROOT_URLCONF = 'urls'
 TEMPLATE_DIRS = (os.path.join(ROOT_PATH, 'templates'),)
 INSTALLED_APPS = (
