@@ -1,5 +1,5 @@
-django-oauth-plus-mod
-=====================
+django-oauth10a-mod
+===================
 
 The [OAuth 1.0a](https://oauth.net/core/1.0a/) protocol enables websites or applications (Consumers) to access Protected Resources from a web service (Service Provider) via an API, without requiring Users to disclose their Service Provider credentials to the Consumers. More generally, OAuth 1.0a creates a freely-implementable and generic methodology for API authentication.
 

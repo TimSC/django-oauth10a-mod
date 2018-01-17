@@ -13,12 +13,12 @@ install_requires = reqs('requirements.txt')
 test_requires = reqs('test-requirements.txt')
 
 setup(
-    name='django-oauth-plus-mod',
+    name='django-oauth10a-mod',
     version=version,
     description='Support of OAuth 1.0a in Django using python-oauth10a.',
     author='Tim Sheerman-Chase',
     author_email='dev@kinatomic.com',
-    url='https://github.com/TimSC/django-oauth-plus-mod',
+    url='https://github.com/TimSC/django-oauth10a-mod',
     packages=find_packages(),
     license='BSD',
     classifiers=[
