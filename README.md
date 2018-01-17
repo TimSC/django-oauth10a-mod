@@ -1,12 +1,18 @@
 django-oauth-plus-mod
 =====================
 
-The OAuth protocol enables websites or applications (Consumers) to access Protected Resources from a web service (Service Provider) via an API, without requiring Users to disclose their Service Provider credentials to the Consumers. More generally, OAuth creates a freely-implementable and generic methodology for API authentication.
+The [OAuth 1.0a](https://oauth.net/core/1.0a/) protocol enables websites or applications (Consumers) to access Protected Resources from a web service (Service Provider) via an API, without requiring Users to disclose their Service Provider credentials to the Consumers. More generally, OAuth 1.0a creates a freely-implementable and generic methodology for API authentication.
 
 django-oauth-plus-mod features two authentication flows:
 
 * three-legged OAuth
 * xAuth (twitter xAuth)
 
-Forked from django-oauth-plus by David Larlet et al. https://bitbucket.org/david/django-oauth-plus
+Depends on: 
+
+* [python-oauth10a](https://github.com/TimSC/python-oauth10a)
+* django 1.8-1.11 (django 2 support is planned)
+* Python 2.7 or Python 3
+
+This project was forked from [django-oauth-plus](https://bitbucket.org/david/django-oauth-plus) by David Larlet et al.
 
