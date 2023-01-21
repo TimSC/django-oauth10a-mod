@@ -6,11 +6,13 @@ import django
 import sys
 
 # location of patterns, url, include changes in 1.4 onwards
-
 try:
-    from django.conf.urls import url, include
+    from django.urls import re_path, include
 except ImportError:
-    from django.conf.urls.defaults import url, include
+    try:
+        from django.conf.urls import url as re_path, include
+    except ImportError:
+        from django.conf.urls.defaults import url as re_path, include
 
 
 # in Django>=1.5 CustomUser models can be specified
