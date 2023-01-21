@@ -13,8 +13,8 @@ django-oauth-plus-mod features two authentication flows:
 Depends on: 
 
 * [python-oauth10a](https://github.com/TimSC/python-oauth10a)
-* django 1.8-2.0
-* Python 2.7 or Python 3
+* django 1.8-4
+* Python 3
 
 This project was forked from [django-oauth-plus](https://bitbucket.org/david/django-oauth-plus) by David Larlet et al.
 
