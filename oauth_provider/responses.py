@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 from __future__ import print_function
 
-from django.utils.translation import ugettext as _
+from oauth_provider.compat import gettext_lazy as _
 from django.http import HttpResponseBadRequest
 
 import oauth10a as oauth

@@ -9,7 +9,7 @@ try:
 except ImportError:
     from django.utils.functional import update_wrapper  # Python 2.3, 2.4 fallback.
 
-from django.utils.translation import ugettext as _
+from oauth_provider.compat import gettext_lazy as _
 
 from .responses import *
 from .utils import initialize_server_request, send_oauth_error, get_oauth_request, verify_oauth_request

@@ -7,7 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate
 from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseRedirect
 from django.views.decorators.csrf import csrf_exempt
-from django.utils.translation import ugettext as _
+from oauth_provider.compat import gettext_lazy as _
 
 import oauth10a as oauth
 

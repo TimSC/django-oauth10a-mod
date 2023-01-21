@@ -14,6 +14,10 @@ except ImportError:
     except ImportError:
         from django.conf.urls.defaults import url as re_path, include
 
+try:
+    from django.utils.translation import gettext_lazy
+except ImportError:
+    from django.utils.translation import ugettext_lazy as gettext_lazy
 
 # in Django>=1.5 CustomUser models can be specified
 if django.VERSION >= (1, 5):
